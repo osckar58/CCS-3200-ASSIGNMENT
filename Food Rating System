@@ -1,0 +1,28 @@
+class FoodRatings {
+private:
+    unordered_map<string, pair<int, string>> foodInfo;
+    unordered_map<string, priority_queue<pair<int, string>>> cuisineHeap;
+    
+public:
+    FoodRatings(vector<string>& foods, vector<string>& cuisines, vector<int>& ratings) {
+        for (int i = 0; i < foods.size(); i++) {
+            foodInfo[foods[i]] = {ratings[i], cuisines[i]};
+            cuisineHeap[cuisines[i]].push({ratings[i], foods[i]});
+        }
+    }
+    
+    void changeRating(string food, int newRating) {
+        foodInfo[food].first = newRating;
+        cuisineHeap[foodInfo[food].second].push({newRating, food});
+    }
+    
+    string highestRated(string cuisine) {
+        auto& heap = cuisineHeap[cuisine];
+        while (!heap.empty()) {
+            auto [rating, food] = heap.top();
+            if (foodInfo[food].first == rating) return food;
+            heap.pop();
+        }
+        return "";
+    }
+};
